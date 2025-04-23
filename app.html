@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Fortune Cookie</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #fff8e7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #a0522d;
+    }
+
+    .cookie {
+      font-size: 5rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .cookie:hover {
+      transform: scale(1.1);
+    }
+
+    #fortune {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      color: #444;
+      max-width: 400px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #f4c430;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #e6b800;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🥠 AI Fortune Cookie</h1>
+  <div class="cookie" onclick="revealFortune()">🥠</div>
+  <div id="fortune"></div>
+  <button onclick="revealFortune()">Crack Another</button>
+
+  <script>
+    const fortunes = [
+      "You will discover something unexpected this week.",
+      "A new hobby will bring you joy.",
+      "Your kindness will return to you multiplied.",
+      "The answer you seek is already within you.",
+      "Beware of squirrels. Trust your instincts.",
+      "Your next big idea will strike in the shower.",
+      "Good vibes are contagious—spread them generously.",
+      "You are exactly where you need to be.",
+      "Don’t underestimate the power of a nap.",
+      "A stranger will brighten your day soon."
+    ];
+
+    function revealFortune() {
+      const randomIndex = Math.floor(Math.random() * fortunes.length);
+      const fortuneText = fortunes[randomIndex];
+      const fortuneDiv = document.getElementById('fortune');
+      fortuneDiv.textContent = `"${fortuneText}"`;
+    }
+  </script>
+
+</body>
+</html>
