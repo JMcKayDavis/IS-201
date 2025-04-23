@@ -186,7 +186,7 @@ address {
   line-height: inherit;
 }
 
-ul {
+.nolist {
   list-style: none;
 }
 
