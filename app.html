@@ -7,17 +7,26 @@
     body {
       font-family: 'Georgia', serif;
       background-color: #fff8e7;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main-content {
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
     }
 
     h1 {
       color: #a0522d;
+      margin-top: 20px;
     }
 
     .cookie {
@@ -35,12 +44,6 @@
       font-size: 1.2rem;
       color: #444;
       max-width: 400px;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     button {
@@ -57,14 +60,81 @@
     button:hover {
       background-color: #e6b800;
     }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: red;
+      animation: fall 3s linear infinite;
+      opacity: 0.7;
+      border-radius: 50%;
+      z-index: 1000;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-100px) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    .dragon {
+      position: fixed;
+      width: 300px;
+      top: 30%;
+      left: -350px;
+      z-index: 999;
+      animation: flyLoop 6s ease-in-out infinite;
+    }
+
+    @keyframes flyLoop {
+      0%   { transform: translate(-350px, 0) rotate(0deg); }
+      25%  { transform: translate(30vw, -20vh) rotate(10deg); }
+      50%  { transform: translate(60vw, 10vh) rotate(-10deg); }
+      75%  { transform: translate(30vw, -10vh) rotate(5deg); }
+      100% { transform: translate(-350px, 0) rotate(0deg); }
+    }
+
+    .special-message, .special-fortune {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 30px;
+      color: #b22222;
+      display: none;
+      animation: fadeIn 2s ease;
+      z-index: 998;
+    }
+
+    .special-fortune {
+      font-size: 2rem;
+      color: #4b0082;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: translateY(-20px); }
+    }
+
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🥠 AI Fortune Cookie</h1>
-  <div class="cookie" onclick="revealFortune()">🥠</div>
-  <div id="fortune"></div>
-  <button onclick="revealFortune()">Crack Another</button>
+  <div class="main-content" id="mainContent">
+    <h1>🥠 AI Fortune Cookie</h1>
+    <div class="cookie" onclick="revealFortune()">🥠</div>
+    <div id="fortune"></div>
+    <button onclick="revealFortune()">Crack Another</button>
+  </div>
+
+  <div class="special-message" id="dragonMessage">The Great Dragon comes to personally deliver your special fortune!</div>
+  <img src="assets/img/dragon.png.png" id="dragon" class="dragon" style="display: none;" />
+  <div class="special-fortune" id="specialFortune"></div>
 
   <script>
     const fortunes = [
@@ -80,11 +150,67 @@
       "A stranger will brighten your day soon."
     ];
 
+    const specialFortunes = [
+      "🔥 Your destiny is greater than you can imagine. Embrace it fearlessly.",
+      "🎉 A rare opportunity will soon knock—be ready to open the door.",
+      "🐉 You are chosen to bring peace and light to your corner of the world."
+    ];
+
+    let clickCount = 0;
+
     function revealFortune() {
-      const randomIndex = Math.floor(Math.random() * fortunes.length);
-      const fortuneText = fortunes[randomIndex];
+      clickCount++;
       const fortuneDiv = document.getElementById('fortune');
-      fortuneDiv.textContent = `"${fortuneText}"`;
+      const mainContent = document.getElementById('mainContent');
+      const specialMessage = document.getElementById('dragonMessage');
+      const dragon = document.getElementById('dragon');
+      const specialFortuneDiv = document.getElementById('specialFortune');
+
+      if (clickCount === 3) {
+        fortuneDiv.textContent = '';
+        mainContent.style.display = 'none';
+
+        specialMessage.style.display = 'block';
+        dragon.style.display = 'block';
+
+        // Confetti burst
+        for (let i = 0; i < 100; i++) {
+          let confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
+          confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 5000);
+        }
+
+        // Show special fortune
+        setTimeout(() => {
+          specialFortuneDiv.style.display = 'block';
+          specialFortuneDiv.textContent = `"${specialFortunes[Math.floor(Math.random() * specialFortunes.length)]}"`;
+        }, 4000);
+
+        // Fade away everything and return to main screen
+        setTimeout(() => {
+          specialMessage.classList.add('fade-out');
+          specialFortuneDiv.classList.add('fade-out');
+          dragon.classList.add('fade-out');
+
+          setTimeout(() => {
+            specialMessage.style.display = 'none';
+            specialFortuneDiv.style.display = 'none';
+            dragon.style.display = 'none';
+            specialMessage.classList.remove('fade-out');
+            specialFortuneDiv.classList.remove('fade-out');
+            dragon.classList.remove('fade-out');
+            mainContent.style.display = 'flex';
+            clickCount = 0;
+          }, 1000); // Match fade-out duration
+        }, 8000); // Wait before fade out
+      } else {
+        const fortuneText = fortunes[Math.floor(Math.random() * fortunes.length)];
+        fortuneDiv.textContent = `"${fortuneText}"`;
+      }
     }
   </script>
 
